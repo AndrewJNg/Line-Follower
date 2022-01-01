@@ -1,0 +1,67 @@
+#include <SoftwareSerial.h>
+SoftwareSerial bt(7,6);
+
+boolean whiteLine = false;
+
+boolean diagnose_bt = true;
+boolean diagnose_position = false;
+boolean diagnose_calibrate = false;
+
+unsigned int minIR[]={1024,1024,1024,1024,1024};
+unsigned int midIR[]={512,512,512,512,512};
+unsigned int maxIR[]={0,0,0,0,0};
+unsigned int get_state[]={0,0,0,0,0};
+
+int IR[]={A7,A6,A2,A1,A0};        //infrared
+int L[]={1,11,13,12,0};           //lights
+int M[]={2,4};                    //motor
+int P[]={3,5};                    //power
+
+void setup() {
+  bt.begin(9600);
+  bt.print("AT+NAME=AndrewJNg\r\n");
+  
+  for(int i=0;i<5;i++){
+    pinMode(IR[i],INPUT);
+    pinMode(L[i],OUTPUT);  digitalWrite(L[i],LOW);
+  }
+  for(int i=0;i<2;i++){
+    pinMode(M[i],OUTPUT);  digitalWrite(M[i],LOW);
+    pinMode(P[i],OUTPUT);  digitalWrite(P[i],LOW); 
+  }
+
+  if(diagnose_bt == true || diagnose_position == true || diagnose_calibrate == true){
+    Serial.begin(9600);
+  }
+}
+
+void loop() {
+//bt_control(speedL, speedR);
+                                                           // bt_control(255, 255); //robot starts with BT control mode until 'auto' button is press
+
+//calibration(speedL, speedR, seconds);
+  calibration(255, 255, 2); //robot perform IR calibration before start line following
+  
+  do{ //students must modify here to perform desired decision on junctions
+    for(int i=0;i<5;i++){
+    digitalWrite(L[i],LOW); 
+  }
+  
+//  junction(speedL, speedR, kp  , kd  , type, action, action_delay, turn_speed, turn_time);
+
+    junction(255   , 255   , 0.1 , 0.1, 'R' , 'r'    , 275         , 255       , 425);   //(255   , 255   , 0.2 , 0.35, 'R' , 's'   , 275         , 200       , 425)
+    digitalWrite(1,HIGH);
+    junction(255   , 255   , 0.2 , 0.35, 'R' , 'r'   , 275         , 255       , 425);
+    digitalWrite(11,HIGH);
+    junction(255   , 255   , 0.2 , 0.35, 'R' , 'r'   , 275         , 255       , 425);
+    digitalWrite(13,HIGH);
+    junction(255   , 255   , 0.2 , 0.35, 'L' , 'l'   , 275         , 255       , 425);
+    digitalWrite(12,HIGH);
+    junction(255   , 255   , 0.2 , 0.35, 'R' , 'r'   , 275         , 255       , 425);
+    digitalWrite(0,HIGH);
+    junction(0   , 0   , 0.2 , 0.35, 'R' , 'r'   , 100         , 255       , 425);
+    junction(0   , 0   , 0.2 , 0.35, 'R' , 'r'   , 100         , 255       , 425);
+  }
+  while(1); // program stop here forever
+}
+
