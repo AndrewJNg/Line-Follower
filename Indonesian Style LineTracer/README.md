@@ -14,5 +14,5 @@
 # Robots made 
 1. 2018 RBTX RoboTracer 
 2. 2018 iDuck 
-3. 2019 Black Mamba & Black Mamba upgraded
+3. 2019 Black Mamba
 4. 2020 Mamba Samurai (not complete)
